@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{0CCC31D8-B139-891F-A100-90A8967E1CA1}</ProjectGuid>
+    <ProjectGuid>{28524E26-75CD-25CD-29FF-60785DACC5B4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Chase.cs" />
+     <Compile Include="Assets\KidAI.cs" />
+     <Compile Include="Assets\KidFSM.cs" />
      <Compile Include="Assets\LowPolyNature\Scripts\Axe.cs" />
      <Compile Include="Assets\LowPolyNature\Scripts\Crate.cs" />
      <Compile Include="Assets\LowPolyNature\Scripts\DamageSource.cs" />

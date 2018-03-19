@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Patrol : StateMachineBehaviour {
-	GameObject Kid;
+public class Patrol : KidFSM {
 	GameObject[] waypoints;
 	int currentWPIndex;
 
@@ -14,7 +13,7 @@ public class Patrol : StateMachineBehaviour {
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		Kid = animator.gameObject;
+		base.OnStateEnter (animator, stateInfo, layerIndex);
 		currentWPIndex = 0;
 	}
 
@@ -24,7 +23,7 @@ public class Patrol : StateMachineBehaviour {
 			return;
 
 		if(Vector3.Distance(waypoints[currentWPIndex].transform.position, 
-							Kid.transform.position) < 0.3f)
+							Kid.transform.position) < ACCURACY)
 		{
 			currentWPIndex++;
 			if(currentWPIndex >= waypoints.Length)
@@ -36,8 +35,8 @@ public class Patrol : StateMachineBehaviour {
 		var direction = waypoints [currentWPIndex].transform.position - Kid.transform.position;
 		Kid.transform.rotation = Quaternion.Slerp (Kid.transform.rotation,
 												   Quaternion.LookRotation(direction),
-												   1.0f * Time.deltaTime);
-		Kid.transform.Translate (0, 0, Time.deltaTime * 0.8f);
+												   ROTSPEED * Time.deltaTime);
+		Kid.transform.Translate (0, 0, Time.deltaTime * SPEED);
 	}
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
