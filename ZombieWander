@@ -1,0 +1,87 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ZombieWander : MonoBehaviour {
+
+	//wander behaviour from gamdevelopment.tutsplus.com
+
+	public Vector3 circleCenter;
+	public Vector3 circleDistance = new Vector3(10f, 0.0f, 10f);
+
+	public Vector3 displaceForce; 
+	public float circleRadius = 20.0f;
+	private float wanderAngle = 0.0f;
+	public float rotateChange = 60.0f;
+
+	private Vector3 wanderForce;
+
+	public float maxspeed = 2.0f;
+
+	private Rigidbody rb;
+
+	//variables used for character facing
+	public float rotateSpeed = 10.0f;
+	public float rotateMag = 0.2f;
+
+
+
+	// Use this for initialization
+	void Start () {
+		rb = GetComponent<Rigidbody> ();
+		WanderForce ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+		//make sure that the character is around the target position before finding a new target
+		if(Vector3.Distance(transform.position, wanderForce) < 0.5f){
+			WanderForce ();
+		}
+			
+		//moves the character to the new position
+		transform.position = Vector3.MoveTowards (transform.position, wanderForce, maxspeed*Time.deltaTime);
+
+		//draws a line to show the target point in the Camera scene. Can delete this eventually
+		Debug.DrawLine(transform.position,wanderForce, Color.yellow, 1);
+
+		//character slowly faces towards new target direction 
+		Vector3 targetDir = wanderForce - transform.position;
+		Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, rotateSpeed*Time.deltaTime, rotateMag);
+		transform.rotation = Quaternion.LookRotation(newDir);
+
+	}
+
+
+	void WanderForce(){
+
+		//calculate the circle position
+		circleCenter = rb.velocity;
+		circleCenter.Normalize();
+		circleCenter.Scale (circleDistance);
+
+
+		//calculate the displacement force for left or right turn
+		displaceForce = new Vector3 (1.0f, 0.0f, 1.0f);
+		displaceForce = displaceForce * circleRadius;
+		float len = displaceForce.magnitude;
+		displaceForce.x = Mathf.Cos (wanderAngle) * len;
+		displaceForce.z = Mathf.Sin (wanderAngle) * len;
+
+		//this is supposed to make sure that the new target point is never anywhere above/below ground
+		//need to ask someone if there is a better solution for this one
+		displaceForce.y = transform.position.y; 
+
+		Debug.Log("X-pos: " +displaceForce.x);
+		Debug.Log("Y-pos: " +displaceForce.x);
+		Debug.Log("Z-pos: " +displaceForce.x);
+
+		//randomly calculates the wander angle for the next wander point
+		wanderAngle += ((Random.Range (0.0f, rotateChange) - rotateChange * 0.5f)) % 360;
+
+		//adding up the circle position and displacement force for the wander point
+		wanderForce = circleCenter + displaceForce;
+
+	}
+}
